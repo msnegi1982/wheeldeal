@@ -24,7 +24,6 @@ class EloquentVehicleRepository implements VehicleRepositoryInterface
         'category:id,name,slug,is_active',
         'fuelType:id,name,slug,is_active',
         'city:id,name,slug,is_active',
-        'media',
     ];
 
     /**
@@ -68,8 +67,7 @@ class EloquentVehicleRepository implements VehicleRepositoryInterface
 
     public function featured(int $limit): Collection
     {
-        return $this->publishableQuery()
-            ->with(self::LISTING_RELATIONS)
+        return $this->withListingRelations($this->publishableQuery())
             ->featured()
             ->orderByDesc('popularity_score')
             ->orderByDesc('published_at')
@@ -79,8 +77,7 @@ class EloquentVehicleRepository implements VehicleRepositoryInterface
 
     public function latest(int $limit): Collection
     {
-        return $this->publishableQuery()
-            ->with(self::LISTING_RELATIONS)
+        return $this->withListingRelations($this->publishableQuery())
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit($limit)
@@ -89,8 +86,7 @@ class EloquentVehicleRepository implements VehicleRepositoryInterface
 
     public function popular(int $limit): Collection
     {
-        return $this->publishableQuery()
-            ->with(self::LISTING_RELATIONS)
+        return $this->withListingRelations($this->publishableQuery())
             ->popular()
             ->limit($limit)
             ->get();
@@ -98,8 +94,7 @@ class EloquentVehicleRepository implements VehicleRepositoryInterface
 
     public function similar(Vehicle $vehicle, int $limit): Collection
     {
-        return $this->publishableQuery()
-            ->with(self::LISTING_RELATIONS)
+        return $this->withListingRelations($this->publishableQuery())
             ->similarTo($vehicle)
             ->orderByDesc('popularity_score')
             ->orderByDesc('published_at')
@@ -122,6 +117,7 @@ class EloquentVehicleRepository implements VehicleRepositoryInterface
     {
         return Vehicle::query()
             ->published()
+            ->withCount(['media as frames_360_count' => fn (Builder $query) => $query->where('collection_name', '360-frames')])
             ->whereHas('brand', fn (Builder $query) => $query->where('is_active', true))
             ->whereHas('vehicleModel', fn (Builder $query) => $query->where('is_active', true))
             ->whereHas('category', fn (Builder $query) => $query->where('is_active', true))
@@ -129,9 +125,16 @@ class EloquentVehicleRepository implements VehicleRepositoryInterface
             ->whereHas('city', fn (Builder $query) => $query->where('is_active', true));
     }
 
+    private function withListingRelations(Builder $query): Builder
+    {
+        return $query
+            ->with(self::LISTING_RELATIONS)
+            ->with(['media' => fn ($mediaQuery) => $mediaQuery->where('collection_name', 'gallery')]);
+    }
+
     private function filteredQuery(VehicleFilterData $filters): Builder
     {
-        $query = $this->publishableQuery()->with(self::LISTING_RELATIONS);
+        $query = $this->withListingRelations($this->publishableQuery());
 
         if ($filters->keyword) {
             $like = '%'.addcslashes($filters->keyword, '%_\\').'%';

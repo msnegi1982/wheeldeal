@@ -34,6 +34,7 @@ class DemoSeeder extends Seeder
         $editor->syncRoles(['Editor']);
 
         $this->call(CatalogDemoSeeder::class);
+        $this->call(RealVehicleMediaSeeder::class);
         $this->call(RequestDemoSeeder::class);
     }
 }

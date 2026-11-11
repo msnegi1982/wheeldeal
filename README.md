@@ -101,6 +101,11 @@ These are demo-only credentials. Change or remove them before any shared deploym
 
 Filtered catalogue URLs are shareable but canonicalise to the clean `/cars` page and emit `noindex,follow`. Empty category/brand landing pages also emit `noindex,follow` and are excluded from the sitemap.
 
+Demo vehicles with real 36-frame 360° media:
+
+- `http://127.0.0.1:8000/cars/toyota/fortuner/2022-toyota-fortuner-zx-1`
+- `http://127.0.0.1:8000/cars/toyota/glanza/2021-toyota-glanza-vxi-2`
+
 ## Configuration
 
 ### Brand and contact details
@@ -143,7 +148,11 @@ Set `TURNSTILE_SECRET_KEY` (preferred) or `RECAPTCHA_SECRET_KEY`. If either secr
 
 ### Media
 
-Vehicle galleries and 360° frames are stored through medialibrary. `FILESYSTEM_DISK=public` locally; run `php artisan storage:link`. For S3/CDN, set `FILESYSTEM_DISK=s3`, configure the AWS variables, then update the media disk configuration if you want conversions on S3. Gallery conversions produce WebP `thumb`, `card`, `large` and `og` variants; 360 frames are converted to WebP at 1200×800.
+Vehicle galleries and 360° frames are stored through medialibrary. `FILESYSTEM_DISK=public` locally; run `php artisan storage:link`. Media URLs are host-relative by default (`FILESYSTEM_PUBLIC_URL=/storage`), so the same build works on `localhost`, `127.0.0.1`, a Laragon virtual host or HTTPS. Set `FILESYSTEM_PUBLIC_URL` to an absolute CDN URL when media is served from another domain. For S3/CDN, set `FILESYSTEM_DISK=s3`, configure the AWS variables, then update the media disk configuration if you want conversions on S3. Gallery conversions produce WebP `thumb`, `card`, `large` and `og` variants; 360 frames are converted to WebP at 1200×800.
+
+The bundled demo seed includes real 36-frame studio spins for the Fortuner and Glanza demo listings. They live in `database/seeders/assets/demo-cars`; `RealVehicleMediaSeeder` copies six frames into `gallery` and all 36 into `360-frames`. Run `php artisan queue:work --stop-when-empty` afterward so the WebP conversions are generated. These are third-party images for local development/testing only — replace them with photography you own or have licensed before publishing. See `database/seeders/assets/demo-cars/README.md` for sources.
+
+The 360° viewer starts loading only when its tab is opened. It preloads and fully decodes every frame behind a progress overlay, then renders the decoded sequence on a canvas so rotation is flicker-free on laptops and desktops. Drag, on-screen arrow controls, keyboard and the Play/Pause auto-rotation toggle are enabled only after the whole sequence is ready. Manual rotation pauses auto-rotation so the chosen angle stays in view.
 
 ## Admin guide
 

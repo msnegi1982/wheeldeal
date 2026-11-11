@@ -159,15 +159,15 @@
 
                     <div x-show="tab === 'photos'" role="tabpanel" aria-label="Photos">
                         @if ($gallery !== [])
-                            <div
-                                x-data="vehicleGallery({{ Js::from($gallery) }}, 0)"
-                                @keydown.arrow-right.prevent="next()"
-                                @keydown.arrow-left.prevent="previous()"
-                                tabindex="0"
-                                class="group relative overflow-hidden rounded-2xl border border-ink-100 bg-ink-900 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/40"
-                                aria-label="Vehicle photo gallery. Use the left and right arrow keys to change photo."
-                            >
-                                <img
+                            <div x-data="vehicleGallery({{ Js::from($gallery) }}, 0)">
+                                <div
+                                    @keydown.arrow-right.prevent="next()"
+                                    @keydown.arrow-left.prevent="previous()"
+                                    tabindex="0"
+                                    class="group relative overflow-hidden rounded-2xl border border-ink-100 bg-ink-900 focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/40"
+                                    aria-label="Vehicle photo gallery. Use the left and right arrow keys to change photo."
+                                >
+                                    <img
                                     src="{{ $primary['url'] }}"
                                     srcset="{{ $primary['srcset'] }}"
                                     sizes="(min-width: 1024px) 65vw, 100vw"
@@ -232,6 +232,7 @@
                                     @endforeach
                                 </div>
                             @endif
+                            </div>
                         @else
                             <div class="flex aspect-[16/10] items-center justify-center rounded-2xl border border-ink-100 bg-ink-50 text-ink-300">
                                 <div class="text-center">
@@ -249,6 +250,7 @@
                                 data-frames="{{ json_encode($frames, JSON_UNESCAPED_SLASHES | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) }}"
                                 data-autoplay="true"
                                 tabindex="0"
+                                aria-busy="true"
                                 class="relative aspect-[16/10] cursor-grab touch-none select-none overflow-hidden rounded-2xl border border-ink-100 bg-ink text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/40"
                                 aria-label="360 degree view of {{ $title }}. Drag left or right, or use the arrow keys, to rotate the car."
                             >
@@ -262,30 +264,100 @@
                                     decoding="async"
                                     class="h-full w-full object-cover"
                                 >
+                                <canvas
+                                    data-360-canvas
+                                    width="1200"
+                                    height="800"
+                                    aria-hidden="true"
+                                    class="pointer-events-none absolute inset-0 h-full w-full opacity-0 transition-opacity duration-200"
+                                ></canvas>
 
-                                <div class="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-3 bg-gradient-to-b from-ink/70 to-transparent p-4">
-                                    <span class="pointer-events-auto badge-brand">360° interactive</span>
+                                <div class="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-end gap-3 bg-gradient-to-b from-ink/70 to-transparent p-4">
                                     <button
                                         type="button"
                                         data-360-toggle
-                                        class="pointer-events-auto rounded-full bg-ink/75 px-3 py-1.5 text-[11px] font-black uppercase tracking-wide text-white backdrop-blur transition hover:bg-ink"
+                                        disabled
+                                        class="pointer-events-auto rounded-full bg-ink/75 px-3 py-1.5 text-[11px] font-black uppercase tracking-wide text-white backdrop-blur transition hover:bg-ink disabled:cursor-wait disabled:opacity-60"
                                         aria-pressed="true"
+                                        aria-label="Pause auto-rotation"
                                     >
-                                        Pause rotation
+                                        Pause
                                     </button>
                                 </div>
 
-                                <div class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent p-4">
+                                <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-ink/80 to-transparent p-4">
                                     <div class="flex items-center justify-between gap-3">
-                                        <span class="inline-flex items-center gap-2 text-xs font-bold text-ink-100">
-                                            <x-wd-icon name="rotate" size="xs" class="text-brand-500" />
-                                            Drag to rotate · {{ count($frames) }} frames
-                                        </span>
-                                        <span class="text-[11px] font-bold uppercase tracking-wide text-ink-300">Swipe on mobile</span>
+                                        <button
+                                            type="button"
+                                            data-360-prev
+                                            disabled
+                                            class="pointer-events-auto hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink/70 text-white backdrop-blur transition hover:bg-ink focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/40 disabled:cursor-wait disabled:opacity-40 md:inline-flex"
+                                            aria-label="Rotate left"
+                                        >
+                                            <x-wd-icon name="chevron-left" size="sm" />
+                                        </button>
+
+                                        <div class="flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 text-center md:flex-row md:gap-3">
+                                            <span class="inline-flex items-center gap-2 text-xs font-bold text-ink-100">
+                                                <x-wd-icon name="rotate" size="xs" class="text-brand-500" />
+                                                Drag to rotate · {{ count($frames) }} frames
+                                            </span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wide text-ink-300 md:hidden">Swipe on mobile</span>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            data-360-next
+                                            disabled
+                                            class="pointer-events-auto hidden h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink/70 text-white backdrop-blur transition hover:bg-ink focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/40 disabled:cursor-wait disabled:opacity-40 md:inline-flex"
+                                            aria-label="Rotate right"
+                                        >
+                                            <x-wd-icon name="chevron-right" size="sm" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div
+                                    data-360-loading
+                                    class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-ink/95 px-6 text-center transition-opacity duration-300"
+                                    aria-hidden="false"
+                                >
+                                    <span
+                                        data-360-spinner
+                                        class="inline-flex h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-brand-500"
+                                        aria-hidden="true"
+                                    ></span>
+
+                                    <div>
+                                        <p data-360-loading-title class="text-sm font-black uppercase tracking-[0.16em] text-white">
+                                            Loading 360° view
+                                        </p>
+                                        <p data-360-status class="mt-1.5 text-xs font-semibold text-ink-200" role="status" aria-live="polite">
+                                            Preparing {{ count($frames) }} frames…
+                                        </p>
                                     </div>
 
-                                    <div data-360-loader class="mt-3 h-1 overflow-hidden rounded-full bg-white/20">
+                                    <div
+                                        data-360-progress-wrap
+                                        role="progressbar"
+                                        aria-label="360 degree frame loading progress"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"
+                                        aria-valuenow="0"
+                                        class="h-1.5 w-56 max-w-full overflow-hidden rounded-full bg-white/20"
+                                    >
                                         <div data-360-progress class="h-full w-0 rounded-full bg-brand-500 transition-[width] duration-300"></div>
+                                    </div>
+
+                                    <div data-360-error class="hidden max-w-xs">
+                                        <p class="text-sm font-bold text-white">Some 360° frames could not load.</p>
+                                        <button
+                                            type="button"
+                                            data-360-retry
+                                            class="mt-3 inline-flex rounded-full bg-brand-500 px-4 py-2 text-xs font-black uppercase tracking-wide text-ink transition hover:bg-brand-400"
+                                        >
+                                            Try again
+                                        </button>
                                     </div>
                                 </div>
                             </div>

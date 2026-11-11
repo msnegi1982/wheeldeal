@@ -335,13 +335,19 @@ class Vehicle extends Model implements HasMedia
     {
         return $this->getMedia('360-frames')
             ->sortBy(fn (Media $media) => $media->order_column ?? $media->id)
-            ->map(fn (Media $media) => $media->getUrl('360') ?: $media->getUrl())
+            ->map(fn (Media $media) => $this->mediaConversionUrl($media, '360'))
             ->values()
             ->all();
     }
 
     public function getHas360Attribute(): bool
     {
+        $count = $this->attributes['frames_360_count'] ?? null;
+
+        if ($count !== null) {
+            return (int) $count >= 24;
+        }
+
         return $this->getMedia('360-frames')->count() >= 24;
     }
 }
