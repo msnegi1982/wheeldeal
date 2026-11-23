@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class EnquiryNote extends Model
 {
-    protected $fillable = ['enquiry_id', 'user_id', 'note'];
+    protected $fillable = ['enquiry_id', 'user_id', 'note', 'follow_up_at'];
+
+    protected $casts = [
+        'follow_up_at' => 'date',
+    ];
 
     public function enquiry()
     {

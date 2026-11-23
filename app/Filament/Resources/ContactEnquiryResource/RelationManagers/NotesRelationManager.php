@@ -22,6 +22,9 @@ class NotesRelationManager extends RelationManager
                 ->rows(4)
                 ->maxLength(2000)
                 ->columnSpanFull(),
+            Forms\Components\DatePicker::make('follow_up_at')
+                ->label('Follow-up date')
+                ->native(false),
         ]);
     }
 
@@ -36,6 +39,11 @@ class NotesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('note')
                     ->wrap()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('follow_up_at')
+                    ->label('Follow-up')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->placeholder('—'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d M Y H:i')
                     ->sortable(),
@@ -47,6 +55,7 @@ class NotesRelationManager extends RelationManager
                     ])),
             ])
             ->actions([
+                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->defaultSort('created_at', 'desc');
