@@ -99,11 +99,15 @@ class VehicleResource extends JsonResource
             'is_featured' => (bool) $this->is_featured,
             'is_popular' => (bool) $this->is_popular,
             'published_at' => $this->published_at?->toIso8601String(),
-            'seo' => [
-                'title' => $this->meta_title,
-                'description' => $this->meta_description,
-                'canonical' => $this->public_url,
-            ],
+            'seo' => (function () {
+                $seo = app(\App\Services\Seo\SeoService::class)->forVehicle($this->resource);
+
+                return [
+                    'title' => $seo->title,
+                    'description' => $seo->description,
+                    'canonical' => $seo->canonical,
+                ];
+            })(),
         ];
     }
 }

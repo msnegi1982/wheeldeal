@@ -60,15 +60,6 @@ class BrandResource extends Resource
                         ->default(true)
                         ->inline(false),
                 ]),
-            Forms\Components\Section::make('SEO overrides')
-                ->collapsed()
-                ->columns(2)
-                ->schema([
-                    Forms\Components\TextInput::make('meta_title')
-                        ->maxLength(255),
-                    Forms\Components\TextInput::make('meta_description')
-                        ->maxLength(255),
-                ]),
         ]);
     }
 

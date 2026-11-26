@@ -245,27 +245,6 @@ class VehicleResource extends Resource
                                         ->helperText('The viewer activates automatically when at least 24 frames are present.'),
                                 ]),
                         ]),
-
-                    Forms\Components\Tabs\Tab::make('SEO')
-                        ->icon('heroicon-o-magnifying-glass')
-                        ->schema([
-                            Forms\Components\Section::make('Search preview')
-                                ->columns(2)
-                                ->schema([
-                                    Forms\Components\TextInput::make('meta_title')
-                                        ->maxLength(255)
-                                        ->helperText('Defaults to “{year} {brand} {model} — ₹price | WheelDeal”.'),
-                                    Forms\Components\TextInput::make('meta_description')
-                                        ->maxLength(255)
-                                        ->helperText('Aim for 140–158 characters.'),
-                                    Forms\Components\TextInput::make('og_image')
-                                        ->label('Open Graph image URL')
-                                        ->url()
-                                        ->maxLength(255)
-                                        ->helperText('Optional. The primary gallery image is used by default.')
-                                        ->columnSpanFull(),
-                                ]),
-                        ]),
                 ]),
         ]);
     }
@@ -310,12 +289,6 @@ class VehicleResource extends Resource
                         ->collection('gallery')
                         ->conversion('card')
                         ->columnSpanFull(),
-                ]),
-            Infolists\Components\Section::make('SEO')
-                ->columns(2)
-                ->schema([
-                    Infolists\Components\TextEntry::make('meta_title')->placeholder('Automatic'),
-                    Infolists\Components\TextEntry::make('meta_description')->placeholder('Automatic'),
                 ]),
         ]);
     }

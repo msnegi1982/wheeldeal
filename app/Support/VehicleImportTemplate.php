@@ -51,8 +51,6 @@ class VehicleImportTemplate
                 'is_popular' => 'no',
                 'features' => 'Reverse Camera|Alloy Wheels|Automatic Climate Control',
                 'slug' => '',
-                'meta_title' => '',
-                'meta_description' => '',
                 'published_at' => '',
             ],
             [
@@ -84,8 +82,6 @@ class VehicleImportTemplate
                 'is_popular' => 'no',
                 'features' => 'Sunroof|Ventilated Seats|ADAS|Wireless Charging',
                 'slug' => '',
-                'meta_title' => '',
-                'meta_description' => '',
                 'published_at' => '',
             ],
         ];

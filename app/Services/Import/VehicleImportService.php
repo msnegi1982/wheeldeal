@@ -65,8 +65,6 @@ class VehicleImportService
         'is_popular',
         'features',
         'slug',
-        'meta_title',
-        'meta_description',
         'published_at',
     ];
 
@@ -661,8 +659,6 @@ class VehicleImportService
             'status' => $status,
             'is_featured' => $this->toBoolean($this->value($row, 'is_featured')),
             'is_popular' => $this->toBoolean($this->value($row, 'is_popular')),
-            'meta_title' => $this->value($row, 'meta_title'),
-            'meta_description' => $this->value($row, 'meta_description'),
             'published_at' => $publishedAt,
         ];
 
@@ -693,8 +689,6 @@ class VehicleImportService
             'status' => ['required', Rule::in(array_column(VehicleStatus::cases(), 'value'))],
             'is_featured' => ['boolean'],
             'is_popular' => ['boolean'],
-            'meta_title' => ['nullable', 'string', 'max:255'],
-            'meta_description' => ['nullable', 'string', 'max:255'],
             'published_at' => ['nullable', 'date'],
         ]);
 
