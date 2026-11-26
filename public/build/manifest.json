@@ -1,0 +1,17 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-a0716b71.css",
+    "isEntry": true,
+    "src": "resources/css/app.css"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-0717ffee.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/js/vehicle-360.js": {
+    "file": "assets/vehicle-360-37676db1.js",
+    "isEntry": true,
+    "src": "resources/js/vehicle-360.js"
+  }
+}
