@@ -234,7 +234,7 @@
         <div class="container-page py-14 lg:py-18">
             <div class="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
                 <div>
-                    <p class="eyebrow">How WheelDeal works</p>
+                    <p class="eyebrow">How {{ config('seo.site_name') }} works</p>
                     <h2 id="how-heading" class="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Less guesswork. More confidence.</h2>
                     <p class="mt-4 max-w-md text-sm leading-7 text-ink-600">
                         We keep the process deliberately simple: clear listings, straight answers and a human who helps you move from shortlist to test drive.

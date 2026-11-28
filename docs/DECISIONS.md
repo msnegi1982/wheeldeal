@@ -18,3 +18,6 @@
 | D14 | Filtered catalogue pages canonicalise to `/cars` and emit `noindex,follow` | Prevents combinatorial filter URLs from competing with landing pages |
 | D15 | Slug changes generate 301 redirects via a model observer | Preserves rankings and inbound links without manual admin work |
 | D16 | Vehicle import reads CSV/XLSX directly with PhpSpreadsheet | Supports chunked reads, progress and row-level reporting without a second import abstraction |
+| D17 | Lead notes carry an optional `follow_up_at` date | Admin/staff can schedule and revisit follow-ups without a separate task module |
+| D18 | Vehicle/brand/category/model SEO meta is generated at render time | Keeps titles and descriptions consistent and removes error-prone manual meta inputs; SEO landing pages remain editable |
+| D19 | Site identity lives in a cached `settings` table and overrides config at boot | Allows admins to change name, contact details and logo without editing `.env` or rebuilding assets |

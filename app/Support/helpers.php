@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 if (! function_exists('format_inr')) {
@@ -53,5 +54,25 @@ if (! function_exists('initials')) {
             ->take($length)
             ->map(fn (string $part) => Str::upper(Str::substr($part, 0, 1)))
             ->implode('');
+    }
+}
+
+if (! function_exists('site_logo_url')) {
+    /**
+     * Public URL for the admin-managed logo, or null when no logo is set.
+     */
+    function site_logo_url(): ?string
+    {
+        $path = config('marketplace.brand.logo');
+
+        if (! is_string($path) || $path === '') {
+            return null;
+        }
+
+        try {
+            return Storage::disk('public')->url($path);
+        } catch (Throwable) {
+            return null;
+        }
     }
 }

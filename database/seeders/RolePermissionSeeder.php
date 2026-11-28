@@ -30,6 +30,8 @@ class RolePermissionSeeder extends Seeder
             }
         }
 
+        $permissions[] = Permission::findOrCreate('manage_site_settings', 'web');
+
         $superAdmin = Role::findOrCreate(UserRole::SUPER_ADMIN->label(), 'web');
         $superAdmin->syncPermissions($permissions);
 
@@ -40,6 +42,10 @@ class RolePermissionSeeder extends Seeder
                     $name = $permission->name;
 
                     if (str_ends_with($name, '_users')) {
+                        return false;
+                    }
+
+                    if ($name === 'manage_site_settings') {
                         return false;
                     }
 

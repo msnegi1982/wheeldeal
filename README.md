@@ -2,7 +2,7 @@
 
 A production-oriented used four-wheeler marketplace built with Laravel 10, Blade, Tailwind CSS, Alpine.js and Filament v3. The public site is server-rendered for SEO and speed; the admin panel covers catalog, leads, imports and SEO tools.
 
-> **Assumption:** "WheelDeal" is a placeholder brand. Change `APP_NAME`, contact details, social links and the default SEO copy before launch.
+> **Assumption:** "WheelDeal" is the default brand. The website name, contact details and logo can be changed in **Admin → Site settings** after launch; social links and default SEO copy still come from `.env` / `config/`.
 
 ## Stack
 
@@ -25,7 +25,7 @@ A production-oriented used four-wheeler marketplace built with Laravel 10, Blade
 - AJAX filters with shareable URLs, crawlable base pages and `noindex,follow` on filtered views.
 - Vehicle detail with gallery, specs, features, similar vehicles and a 24–36 frame 360° viewer.
 - Sell/buy requests protected by a 6-digit OTP; enquiries and contact forms use honeypot + optional Turnstile/reCAPTCHA.
-- Filament admin for vehicles, master data, SEO pages, redirects, users, requests, enquiries and imports.
+- Filament admin for vehicles, master data, SEO pages, redirects, users, requests, enquiries, imports and site identity settings.
 - Queued, chunked CSV/XLSX import with row-level errors, downloadable reports and retry.
 - XML sitemap, dynamic `robots.txt`, canonical URLs, Open Graph/Twitter tags and Organization, WebSite, Car/Offer and BreadcrumbList schema.
 - REST API under `/api/v1` sharing the same services as the web UI.
@@ -158,10 +158,14 @@ The 360° viewer starts loading only when its tab is opened. It preloads and ful
 
 ### Roles
 
-- **Super Admin** — everything, including users, imports and redirect deletion.
-- **Editor** — catalog, SEO pages, requests, enquiries and imports; cannot manage users or delete imports/redirects.
+- **Super Admin** — everything, including users, imports, redirect deletion and site settings.
+- **Editor** — catalog, SEO pages, requests, enquiries and imports; cannot manage users, site settings or delete imports/redirects.
 
-Policies are auto-discovered under `app/Policies`. Permission names follow `{action}_{resource}` (for example `view_any_vehicles`, `export_requests`).
+Policies are auto-discovered under `app/Policies`. Permission names follow `{action}_{resource}` (for example `view_any_vehicles`, `export_requests`). Site settings use the `manage_site_settings` permission; grant it to additional roles if they should edit branding.
+
+### Site settings
+
+Open **Admin → Site settings** to change the website name, phone number, WhatsApp number, email address, address and logo. Values are stored in the `settings` table, cached and applied at runtime to `app.name`, SEO titles/schema, the public header/footer, contact pages and the Filament brand. A logo is uploaded to the `public` disk under `storage/app/public/branding`; `php artisan storage:link` must exist for it to appear on the site. Leave the logo empty to keep the default brand mark.
 
 ### Catalog
 
@@ -182,7 +186,7 @@ Open **Admin → Imports**, download the CSV template, then upload a CSV/XLSX/XL
 
 Required header columns: `brand`, `model`, `year`, `price`.
 
-Optional columns include title, variant, category, fuel type, city, kilometres, ownership, transmission, seats, colour, registration details, engine/power/torque/mileage, description, condition, status, featured/popular flags, pipe-separated features, slug, meta fields and publish date. Common aliases such as `make`, `brand_name`, `model_name`, `body_type`, `fuel`, `city_name`, `kms`, `owners` and `feature` are accepted.
+Optional columns include title, variant, category, fuel type, city, kilometres, ownership, transmission, seats, colour, registration details, engine/power/torque/mileage, description, condition, status, featured/popular flags, pipe-separated features, slug and publish date. SEO meta is generated automatically and cannot be imported. Common aliases such as `make`, `brand_name`, `model_name`, `body_type`, `fuel`, `city_name`, `kms`, `owners` and `feature` are accepted.
 
 Import rules:
 
@@ -277,9 +281,9 @@ These are a direct consequence of the required PHP 8.1.10 runtime. **Before a pu
 
 1. Set `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL` and a strong `APP_KEY`.
 2. Use MySQL 8 with a least-privilege database user.
-3. Configure Redis for cache, queue and sessions; run `php artisan config:cache route:cache view:cache`.
+3. Configure Redis for cache, queue and sessions where available. On shared hosting without Redis, use `CACHE_DRIVER=file`, `SESSION_DRIVER=file` and `QUEUE_CONNECTION=database`; then run `php artisan config:cache route:cache view:cache`.
 4. Set `FILESYSTEM_DISK`, run `php artisan storage:link`, and point media at S3/CDN if required.
-5. Run `php artisan migrate --force`.
+5. Run `php artisan migrate --force`. On an existing install, run `php artisan db:seed --class=RolePermissionSeeder` so the `manage_site_settings` permission is created.
 6. Configure a supervised `php artisan queue:work` process and the scheduler (`php artisan schedule:run` every minute).
 7. Run `php artisan sitemap:generate --fresh` after launch content is loaded.
 8. Configure Turnstile/reCAPTCHA and a real OTP driver.

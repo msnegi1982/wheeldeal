@@ -5,7 +5,11 @@
 >
     <div class="container-page flex h-18 items-center justify-between gap-4">
         <a href="{{ route('home') }}" class="flex items-center gap-2.5" aria-label="{{ config('seo.site_name') }} home">
-            <x-brand-mark class="h-10 w-10" />
+            @if (site_logo_url())
+                <img src="{{ site_logo_url() }}" alt="{{ config('seo.site_name') }} logo" class="h-10 w-10 rounded-xl object-contain" />
+            @else
+                <x-brand-mark class="h-10 w-10" />
+            @endif
             <span class="flex flex-col leading-none">
                 <span class="font-display text-lg font-black tracking-tight text-ink">{{ config('seo.site_name') }}</span>
                 <span class="mt-1 hidden text-[10px] font-bold uppercase tracking-[0.16em] text-ink-400 sm:block">Verified used cars</span>

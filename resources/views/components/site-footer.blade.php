@@ -25,7 +25,11 @@
         <div class="grid gap-10 lg:grid-cols-[1.5fr_1fr_1fr_1.25fr]">
             <div>
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-2.5" aria-label="{{ config('seo.site_name') }} home">
-                    <x-brand-mark class="h-11 w-11" />
+                    @if (site_logo_url())
+                        <img src="{{ site_logo_url() }}" alt="{{ config('seo.site_name') }} logo" class="h-11 w-11 rounded-xl bg-white/95 p-1 object-contain" />
+                    @else
+                        <x-brand-mark class="h-11 w-11" />
+                    @endif
                     <span class="font-display text-xl font-black tracking-tight text-white">{{ config('seo.site_name') }}</span>
                 </a>
                 <p class="mt-4 max-w-sm text-sm leading-6 text-ink-300">

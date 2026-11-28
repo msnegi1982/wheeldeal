@@ -27,8 +27,10 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName(config('marketplace.brand.name'))
-            ->favicon(asset('favicon.ico'))
+            ->brandName(fn () => config('marketplace.brand.name'))
+            ->brandLogo(fn () => site_logo_url())
+            ->brandLogoHeight('2.5rem')
+            ->favicon(fn () => site_logo_url() ?: asset('favicon.ico'))
             ->colors([
                 'primary' => Color::hex('#FFC107'),
             ])

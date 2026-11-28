@@ -19,7 +19,7 @@ class ContactController extends Controller
         return view('pages.contact', [
             'seo' => $this->seo->forPage(
                 'Contact us',
-                'Questions about buying or selling a used car? Call, WhatsApp or message the WheelDeal team.',
+                'Questions about buying or selling a used car? Call, WhatsApp or message the '.config('seo.site_name').' team.',
                 '/contact'
             ),
         ]);

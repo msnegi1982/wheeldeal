@@ -9,6 +9,7 @@ return [
         'email' => env('CONTACT_EMAIL', 'hello@wheeldeal.test'),
         'address' => env('CONTACT_ADDRESS', '2nd Floor, 12 MG Road, Bengaluru, Karnataka 560001'),
         'hours' => 'Mon–Sat, 9:30am–7:00pm',
+        'logo' => null,
     ],
 
     'pagination' => [

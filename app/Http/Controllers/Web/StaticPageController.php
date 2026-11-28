@@ -14,8 +14,8 @@ class StaticPageController extends Controller
     {
         return view('pages.about', [
             'seo' => $this->seo->forPage(
-                'About WheelDeal',
-                'WheelDeal makes buying and selling used four-wheelers in India simpler, safer and more transparent.',
+                'About '.config('seo.site_name'),
+                config('seo.site_name').' makes buying and selling used four-wheelers in India simpler, safer and more transparent.',
                 '/about'
             ),
         ]);
@@ -26,7 +26,7 @@ class StaticPageController extends Controller
         return view('pages.privacy', [
             'seo' => $this->seo->forPage(
                 'Privacy policy',
-                'How WheelDeal collects, uses and protects the personal information you share with us.',
+                'How '.config('seo.site_name').' collects, uses and protects the personal information you share with us.',
                 '/privacy'
             ),
         ]);
@@ -37,7 +37,7 @@ class StaticPageController extends Controller
         return view('pages.terms', [
             'seo' => $this->seo->forPage(
                 'Terms of use',
-                'The terms that apply when you browse WheelDeal, submit a vehicle request or contact our team.',
+                'The terms that apply when you browse '.config('seo.site_name').', submit a vehicle request or contact our team.',
                 '/terms'
             ),
         ]);
